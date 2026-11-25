@@ -4,3 +4,19 @@ dist/
 __pycache__/
 .venv/
 *.pyc
+backend/.env
+backend/data/
+backup_leads_preintegration/
+
+# Local backups and snapshots
+backup_*/
+*.backup*
+*.before_*
+truckscope_snapshot.*
+=
+.env
+*.db
+*.sqlite
+*.sqlite3
+*.pem
+*.key

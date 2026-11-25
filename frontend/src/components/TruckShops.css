@@ -1,0 +1,126 @@
+
+.truck-shops-page {
+  width: 100%;
+}
+
+.shops-controls {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin: 24px 0;
+}
+
+.shops-controls label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  color: #526071;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.shops-controls select {
+  width: 100%;
+  min-height: 46px;
+  padding: 10px 14px;
+  border: 1px solid #dce1e8;
+  border-radius: 9px;
+  background: #fff;
+  color: #172033;
+  font: inherit;
+}
+
+.shops-map {
+  width: 100%;
+  height: 480px;
+  overflow: hidden;
+  border: 1px solid #e1e5eb;
+  border-radius: 14px;
+  z-index: 0;
+}
+
+.shops-map .leaflet-container {
+  width: 100%;
+  height: 100%;
+  font-family: inherit;
+}
+
+.shops-results-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin: 24px 0 14px;
+  color: #172033;
+}
+
+.shops-results-heading span {
+  color: #758195;
+  font-size: 13px;
+}
+
+.shops-results {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.shop-result-card {
+  padding: 16px;
+  border: 1px solid #e3e7ed;
+  border-radius: 10px;
+  background: #fff;
+}
+
+.shop-result-card h3 {
+  margin: 0 0 8px;
+  color: #172033;
+  font-size: 15px;
+}
+
+.shop-result-card p {
+  margin: 5px 0;
+  color: #657184;
+  font-size: 13px;
+}
+
+.shop-result-card a,
+.shops-osm-link {
+  color: #9a6816;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.shops-osm-link {
+  display: inline-block;
+  margin-top: 20px;
+}
+
+.shops-map-note {
+  margin-top: 12px;
+  color: #7b8492;
+  font-size: 12px;
+}
+
+.shops-message {
+  padding: 18px;
+  margin: 12px 0;
+  border-radius: 9px;
+  background: #f3f5f8;
+  color: #596579;
+}
+
+.shops-message.error {
+  color: #a33b32;
+}
+
+@media (max-width: 700px) {
+  .shops-controls,
+  .shops-results {
+    grid-template-columns: 1fr;
+  }
+
+  .shops-map {
+    height: 360px;
+  }
+}
