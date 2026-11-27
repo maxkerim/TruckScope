@@ -10,7 +10,10 @@ from pydantic import BaseModel, Field
 
 router = APIRouter(prefix="/api/road", tags=["Road Locations"])
 
-OVERPASS_URL = "https://overpass-api.de/api/interpreter"
+OVERPASS_URLS = (
+    "https://ovp.dresel.systems/api-na/interpreter",
+    "https://maps.mail.ru/osm/tools/overpass/api/interpreter",
+)
 CACHE_TTL = 1800
 _cache: dict[str, tuple[float, dict]] = {}
 
@@ -249,50 +252,54 @@ def get_overpass_locations(payload: OverpassRequest):
     if cached and now - cached[0] < CACHE_TTL:
         return cached[1]
 
-    try:
-        response = requests.post(
-            OVERPASS_URL,
-            data={"data": query},
-            headers={"User-Agent": "TruckScope/1.0"},
-            timeout=55,
-        )
-        response.raise_for_status()
-        data = response.json()
+    errors = []
 
-        if not isinstance(data, dict) or not isinstance(data.get("elements"), list):
-            raise ValueError("Unexpected Overpass response")
+    for url in OVERPASS_URLS:
+        try:
+            response = requests.post(
+                url,
+                data={"data": query},
+                headers={"User-Agent": "TruckScope/1.0"},
+                timeout=(10, 210),
+            )
+            response.raise_for_status()
+            data = response.json()
 
-        original_count = len(data["elements"])
-        data["elements"] = normalize_and_deduplicate(data["elements"])
-        data["truckscope_meta"] = {
-            "source": "OpenStreetMap Overpass API",
-            "original_count": original_count,
-            "result_count": len(data["elements"]),
-            "duplicates_removed": original_count - len(data["elements"]),
-            "cache_ttl_seconds": CACHE_TTL,
-        }
+            if not isinstance(data, dict) or not isinstance(data.get("elements"), list):
+                raise ValueError("Unexpected Overpass response")
 
-        _cache[query] = (now, data)
+            original_count = len(data["elements"])
+            data["elements"] = normalize_and_deduplicate(data["elements"])
 
-        # Prevent the in-memory cache from growing indefinitely.
-        if len(_cache) > 100:
-            oldest_keys = sorted(_cache, key=lambda key: _cache[key][0])[:25]
-            for key in oldest_keys:
-                _cache.pop(key, None)
+            data["truckscope_meta"] = {
+                "source": url,
+                "original_count": original_count,
+                "result_count": len(data["elements"]),
+                "duplicates_removed": original_count - len(data["elements"]),
+                "cache_ttl_seconds": CACHE_TTL,
+            }
 
-        return data
+            _cache[query] = (time.time(), data)
 
-    except requests.RequestException as exc:
-        raise HTTPException(
-            status_code=502,
-            detail=f"OpenStreetMap service is temporarily unavailable: {exc}",
-        ) from exc
-    except (ValueError, TypeError) as exc:
-        raise HTTPException(
-            status_code=502,
-            detail=f"Could not process OpenStreetMap data: {exc}",
-        ) from exc
+            if len(_cache) > 100:
+                oldest_keys = sorted(
+                    _cache, key=lambda key: _cache[key][0]
+                )[:25]
+                for key in oldest_keys:
+                    _cache.pop(key, None)
 
+            return data
+
+        except (requests.RequestException, ValueError, TypeError) as exc:
+            errors.append(f"{url}: {exc}")
+
+    raise HTTPException(
+        status_code=502,
+        detail={
+            "message": "All OpenStreetMap servers are temporarily unavailable",
+            "errors": errors,
+        },
+    )
 
 # TRUCKSCOPE_NWS_ALERTS_V1
 NWS_ALERTS_URL = "https://api.weather.gov/alerts/active"

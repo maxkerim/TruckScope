@@ -35,6 +35,7 @@ const translations = {
     directoryLabel: 'TRUCKING DIRECTORY',
     directoryDescription: 'Find and explore trucking companies in the USA.',
     directory: 'Trucking companies',
+    fmcsaNotice: '⚠️ FMCSA data reflects official registration, not necessarily real-world operating conditions. Truck counts, status and working terms may differ in practice. Check driver reviews and verify each company independently.',
     payTitle: 'Average Trucking Company Pay',
     companyDriver: 'Водитель компании',
     ownerOperator: 'Владелец-оператор',
@@ -81,8 +82,6 @@ const translations = {
     loading: 'Loading companies...',
     error: 'Could not load companies.',
     empty: 'No companies found.',
-    shopsTitle: 'Find truck repair shops',
-    shopsText: 'Explore truck repair and maintenance services in selected US cities.',
     coming: 'Directory coming soon',
     newsTitle: 'Latest trucking news',
     newsText: 'Industry updates, FMCSA regulations, safety, freight and trucking technology.',
@@ -99,6 +98,7 @@ const translations = {
     directoryLabel: 'DIRECTORIO DE EMPRESAS DE TRANSPORTE',
     directoryDescription: 'Busca y descubre empresas de transporte en EE. UU.',
     directory: 'Empresas de transporte',
+    fmcsaNotice: '⚠️ Los datos de FMCSA reflejan el registro oficial, no necesariamente la situación real. La cantidad de camiones, el estado y las condiciones de trabajo pueden variar. Consulta las opiniones de los conductores y verifica cada empresa.',
     payTitle: 'Salarios promedio de las empresas de transporte',
     companyDriver: 'Conductor de empresa',
     ownerOperator: 'Operador propietario',
@@ -130,8 +130,6 @@ const translations = {
     loading: 'Cargando empresas...',
     error: 'No se pudieron cargar las empresas.',
     empty: 'No se encontraron empresas.',
-    shopsTitle: 'Encuentra talleres de camiones',
-    shopsText: 'Explora servicios de reparación y mantenimiento en ciudades seleccionadas.',
     coming: 'Directorio próximamente',
     newsTitle: 'Últimas noticias del transporte',
     newsText: 'Actualizaciones, regulaciones FMCSA, seguridad, carga y tecnología.',
@@ -148,6 +146,7 @@ const translations = {
     directoryLabel: 'КАТАЛОГ ТРАКОВЫХ КОМПАНИЙ',
     directoryDescription: 'Изучайте траковые компании в США.',
     directory: 'Траковые компании',
+    fmcsaNotice: '⚠️ Данные FMCSA отражают официальную регистрацию, а не обязательно реальное положение дел. Количество траков, статус и условия работы на практике могут отличаться. Изучайте отзывы водителей и самостоятельно проверяйте компанию.',
     payTitle: 'Средняя оплата в транспортных компаниях',
     companyDriver: 'Company Driver',
     ownerOperator: 'Owner Operator',
@@ -179,8 +178,6 @@ const translations = {
     loading: 'Загрузка компаний...',
     error: 'Не удалось загрузить компании.',
     empty: 'Компании не найдены.',
-    shopsTitle: 'Найдите трак-шоп',
-    shopsText: 'Каталог ремонта и обслуживания траков в выбранных городах США.',
     coming: 'Каталог скоро появится',
     newsTitle: 'Последние новости тракинга',
     newsText: 'Новости отрасли, правила FMCSA, безопасность, грузоперевозки и технологии.',
@@ -307,27 +304,16 @@ function App() {
         </div>
       </header>
 
-      <section className="hero">
-        <div className="hero-inner">
-          {activeTab !== 'news' && (
-            <>
-              <div className="eyebrow">{t.eyebrow}</div>
-
-              <h1>
-                
-                {activeTab === 'shops' && t.shopsTitle}
-              </h1>
-
-              <p>
-                {activeTab === 'companies' && t.subtitle}
-                {activeTab === 'shops' && t.shopsText}
-              </p>
-
-              <div className="hero-line" />
-            </>
-          )}
-        </div>
-      </section>
+      {activeTab === 'companies' && (
+        <section className="hero">
+          <div className="hero-inner">
+            <div className="eyebrow">{t.eyebrow}</div>
+            <h1>{t.heading}</h1>
+            <p>{t.subtitle}</p>
+            <div className="hero-line" />
+          </div>
+        </section>
+      )}
 
       <main className="main-content">
         {activeTab === 'companies' && (
@@ -340,14 +326,9 @@ function App() {
 
                 <h2>{t.directory}</h2>
 
-                <p>
-                  {t.directoryDescription}
-                </p>
-              </div>
-
-              <div className="count">
-                <strong>{totalCompanies.toLocaleString()}</strong>
-                <span> companies</span>
+                <div className="fmcsa-notice">
+                  {t.fmcsaNotice}
+                </div>
               </div>
             </div>
 
@@ -388,6 +369,14 @@ function App() {
 
   <p className="pay-note">{t.example}</p>
 </section>
+
+            <div className="directory-meta">
+              <p>{t.directoryDescription}</p>
+              <div className="count">
+                <strong>{totalCompanies.toLocaleString()}</strong>
+                <span> companies</span>
+              </div>
+            </div>
 
             <div className="filters">
               <input
