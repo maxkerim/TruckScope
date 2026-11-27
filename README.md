@@ -1,68 +1,82 @@
-# 🚛 TruckScope
+Why TruckScope exists
 
-**Comprehensive Trucking Information Platform & Directory for the US Market**
+Official FMCSA data tells you that a company exists, not whether it is a good place to work. A carrier can list 150 trucks on paper while only 15 are actually running. Authority status, insurance and fleet size from public registries are a starting point, not the truth.
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Status](https://img.shields.io/badge/Status-Active-success.svg)]()
-[![DevOps](https://img.shields.io/badge/DevOps-Docker%20%7C%20CI%2FCD-blue)]()
+That is why TruckScope is built around reviews from real drivers:
 
----
+FMCSA data gives the skeleton: USDOT number, location, declared fleet size.
+Drivers fill in what no registry knows: real pay, real dispatch, payment delays, equipment condition.
+Anything not confirmed by a source is shown as "Not verified", never guessed.
 
-## 📖 About the Project
+Built by a former US trucking dispatcher (8 years in the industry) for drivers, including Russian- and Spanish-speaking drivers who struggle to find reliable information in their language.
 
-**TruckScope** is a multilingual information platform and directory designed specifically for the US trucking industry. It aggregates official FMCSA safety data, transparent pay rates, and essential "On The Road" services into one intuitive interface. 
+Features
+Section	What it does
+Companies	Directory of 34,053 US trucking companies from FMCSA data. Search by name or city, filter by state, fleet size and reviews.
+Driver reviews	Drivers rate and review carriers. Companies without reviews are clearly marked.
+Pay insights	Example market ranges for company drivers (CPM, percentage, sign-on bonus) and owner-operators (percentage, typical weekly deductions, trailer rental).
+News	Industry news feed, categorized.
+On The Road	Live US weather alerts (National Weather Service) on a map, for the last 24 / 48 hours, plus a truck repair shop catalog.
+Languages	Full interface in English, Español and Русский.
+Data sources and honesty
+Company data: FMCSA public registry. Fleet size is the number declared by the carrier and may not reflect real operations.
+Weather alerts: National Weather Service (NWS) public API.
+Pay figures: illustrative examples only. Real pay and deductions depend on the company and contract.
+Verification: fields without a confirmed source show "Not verified".
 
-Unlike generic job boards, TruckScope is built with deep industry insight, offering dedicated localization and support for **English, Russian, and Spanish-speaking drivers**, bridging the information gap for immigrant truckers in the USA.
+TruckScope is an independent project and is not affiliated with FMCSA, NWS or any carrier listed.
 
-> 💡 **Origin Story:** Built by a former US trucking dispatcher with 8 years of hands-on industry experience, this project solves real pain points: fragmented company data, lack of transparent safety/pay metrics, and language barriers on the road.
+Tech stack
+Frontend: Vite dev server (localhost:5173), multilingual UI (EN / ES / RU)
+Maps: Leaflet + OpenStreetMap
+Backend: API in backend/
+Infrastructure: Docker & Docker Compose
+Project structure
+TruckScope/
+├── backend/            # API and data import
+├── frontend/           # Web application
+├── docker-compose.yml  # Local / production orchestration
+└── README.md
+Getting started
+Prerequisites
+Docker and Docker Compose, or Node.js 18+
+Run with Docker
+bash
+git clone https://github.com/maxkerim/TruckScope.git
+cd TruckScope
+docker compose up --build
 
----
+The app will be available at http://localhost:5173.
 
-## ✨ Key Features
+Run without Docker
+bash
+git clone https://github.com/maxkerim/TruckScope.git
+cd TruckScope
 
-### 🏢 Trucking Directory & FMCSA Integration
-- Database of **34,000+ US trucking companies**.
-- Real-time integration with **FMCSA SAFER data** (USDOT verification, Safety Ratings, Out-of-Service rates).
-- **Amazon Relay Ready** badge: Automated compliance check showing which carriers meet Amazon's strict requirements.
+# backend
+cd backend
+npm install
+npm run dev
 
-### 💰 Transparent Compensation Insights
-- Clear breakdowns of average market pay for **Company Drivers** (CPM, weekly guarantees, sign-on bonuses) vs. **Owner-Operators** (gross percentage, typical weekly deductions for IFTA, insurance, and rentals).
+# frontend (in a second terminal)
+cd frontend
+npm install
+npm run dev
 
-### 🗺️ "On The Road" Directory
-- Curated map and listings for essential services: Truck repair shops, safe overnight parking, 24/7 towing & recovery, and weigh stations (Scale Houses).
-- Dedicated section for **Legal & Immigration Help** and **Russian/Spanish-speaking dispatchers**.
+Copy any .env.example files to .env and fill in the values before starting.
 
-### 📰 Multilingual News & Real-Time Alerts
-- Aggregated live RSS feeds from top industry sources (FreightWaves, Truckers News).
-- **Instant AI-assisted translation** of critical alerts (road closures, multi-vehicle accidents, FMCSA regulation changes) into EN, RU, and ES.
-- Categorized feeds: Safety, Freight Market, Technology & ELD, and Weather/Routes.
+Roadmap
+[ ] Driver registration and review submission with moderation
+[ ] Reviews: pay, dispatch, payment speed, equipment, would-recommend
+[ ] Sorting and USDOT search
+[ ] Map clustering and filters by state / alert type
+[ ] Translated weather alerts
+[ ] Parking, towing, scale houses and legal help directories
+[ ] CI/CD with GitHub Actions
+Contributing
 
----
+Issues and pull requests are welcome. If you are a driver and found wrong data about a company, open an issue.
 
-## 🛠️ Tech Stack & DevOps Highlights
+License
 
-*This project serves as a comprehensive DevOps portfolio case, demonstrating end-to-end deployment, automation, and monitoring.*
-
-- **Frontend:** [Next.js / React], [Tailwind CSS], `i18next` (for seamless EN/RU/ES localization)
-- **Backend:** [Node.js (Express) / Python (FastAPI)]
-- **Database:** [PostgreSQL / MongoDB]
-- **Infrastructure & DevOps:** 
-  - 🐳 **Docker & Docker Compose** for containerized local development and production consistency.
-  - 🔄 **GitHub Actions** for automated CI/CD pipelines (linting, testing, and auto-deployment).
-  - 🌐 **Nginx** as a reverse proxy with SSL termination (Let's Encrypt).
-  - 📊 **[Optional: Prometheus & Grafana / Uptime Kuma]** for application monitoring and RSS feed health checks.
-- **External APIs:** FMCSA SAFER Web API, RSS Feed Parsers, [Google Maps API / Translation API].
-
----
-
-## 🚀 Getting Started
-
-### Prerequisites
-- Node.js `[v18+]` or Python `[v3.10+]`
-- Docker & Docker Compose
-
-### Local Development
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/maxkerim/TruckScope.git
-   cd TruckScope
+MIT. See LICENSE.
