@@ -11,31 +11,25 @@ async function request(url) {
   return response.json()
 }
 
-export async function getCompanies({
-  state = '',
-  search = '',
-  limit = 200,
-  offset = 0,
-} = {}) {
-  const params = new URLSearchParams({
-    limit: String(limit),
-    offset: String(offset),
-  })
+function buildParams({ state = '', search = '', fleetSize = '', reviews = '', limit, offset } = {}) {
+  const params = new URLSearchParams()
 
+  if (limit !== undefined) params.set('limit', String(limit))
+  if (offset !== undefined) params.set('offset', String(offset))
   if (state) params.set('state', state)
   if (search.trim()) params.set('search', search.trim())
+  if (fleetSize) params.set('fleet_size', fleetSize)
+  if (reviews) params.set('reviews', reviews)
 
+  return params
+}
+
+export async function getCompanies(filters = {}) {
+  const params = buildParams(filters)
   return request(`${API_URL}/companies?${params}`)
 }
 
-export async function getCompaniesCount({
-  state = '',
-  search = '',
-} = {}) {
-  const params = new URLSearchParams()
-
-  if (state) params.set('state', state)
-  if (search.trim()) params.set('search', search.trim())
-
+export async function getCompaniesCount(filters = {}) {
+  const params = buildParams(filters)
   return request(`${API_URL}/companies/count?${params}`)
 }

@@ -2,13 +2,13 @@ import { useEffect, useMemo, useState } from 'react'
 import './News.css'
 
 const categories = [
-  { id: 'all', icon: '📰', labels: ['Latest News', 'Últimas noticias', 'Последние новости'] },
-  { id: 'drivers', icon: '🚛', labels: ['Truck Drivers', 'Conductores', 'Водители'] },
+  { id: 'drivers', icon: '🚛', labels: ['Drivers', 'Conductores', 'Водители'] },
   { id: 'regulations', icon: '📋', labels: ['FMCSA & Regulations', 'FMCSA y regulaciones', 'FMCSA и правила'] },
   { id: 'safety', icon: '🛡️', labels: ['Safety & Accidents', 'Seguridad y accidentes', 'Безопасность и аварии'] },
   { id: 'freight', icon: '📦', labels: ['Freight Market', 'Mercado de carga', 'Рынок грузоперевозок'] },
-  { id: 'technology', icon: '⚙️', labels: ['Technology', 'Tecnología', 'Технологии'] },
+  { id: 'weather', icon: '🌪️', labels: ['Weather & Routes', 'Clima y rutas', 'Погода и маршруты'] },
   { id: 'fuel', icon: '⛽', labels: ['Fuel & Roads', 'Combustible y carreteras', 'Топливо и дороги'] },
+  { id: 'technology', icon: '⚙️', labels: ['Tech & ELD', 'Tecnología y ELD', 'Технологии и ELD'] },
 ]
 
 const words = {
@@ -63,7 +63,7 @@ function formatDate(value, language) {
 }
 
 export default function News({ language = 'EN' }) {
-  const [category, setCategory] = useState('all')
+  const [category, setCategory] = useState('drivers')
   const [articles, setArticles] = useState([])
   const [search, setSearch] = useState('')
   const [loading, setLoading] = useState(true)
@@ -138,7 +138,7 @@ export default function News({ language = 'EN' }) {
           placeholder={t.search}
           aria-label={t.search}
         />
-        <span>{filtered.length} {t.source === 'Источник' ? 'статей' : language === 'ES' ? 'artículos' : 'articles'}</span>
+        <span>{filtered.length} {language === 'RU' ? 'статей' : language === 'ES' ? 'artículos' : 'articles'}</span>
       </div>
 
       {loading && <div className="news-message">{t.loading}</div>}
@@ -173,7 +173,7 @@ export default function News({ language = 'EN' }) {
       )}
 
       <div className="news-disclaimer">
-        Articles are provided by their original publishers. TruckScope links to external sources.
+        {language === 'RU' ? 'Статьи публикуются их первоначальными авторами. TruckScope предоставляет ссылки на внешние источники.' : language === 'ES' ? 'Los artículos son publicados por sus fuentes originales. TruckScope enlaza a fuentes externas.' : 'Articles are provided by their original publishers. TruckScope links to external sources.'}
       </div>
     </section>
   )

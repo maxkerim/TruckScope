@@ -783,3 +783,109 @@ button {
   gap: 4px;
   line-height: 1.3;
 }
+
+/* TRUCKSCOPE: COMPANY FILTERS */
+.filters {
+  grid-template-columns: minmax(220px, 2fr) repeat(3, minmax(145px, 1fr));
+}
+
+/* TRUCKSCOPE: DRIVER REVIEWS */
+.company-reviews {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 0;
+  border-bottom: 1px solid #edf0f4;
+}
+
+.review-stars {
+  display: flex;
+  gap: 2px;
+  font-size: 19px;
+  line-height: 1;
+}
+
+.review-stars .star {
+  color: #d7dce2;
+}
+
+.review-stars .star.filled {
+  color: #e5a32b;
+}
+
+.review-count,
+.no-rating {
+  color: #778594;
+  font-size: 12px;
+}
+
+/* TRUCKSCOPE: TWO PAY COLUMNS */
+.pay-columns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.pay-columns .pay-group {
+  min-width: 0;
+  padding: 16px;
+  border: 1px solid #e3e8ee;
+  border-radius: 10px;
+  background: #fff;
+}
+
+.pay-columns .pay-group h4 {
+  margin-top: 0;
+}
+
+.pay-columns .pay-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.pay-columns .pay-item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 12px 4px;
+  border: 0;
+  border-bottom: 1px solid #edf0f4;
+  border-radius: 0;
+  background: transparent;
+}
+
+.pay-columns .pay-item:last-child {
+  border-bottom: 0;
+}
+
+.pay-columns .pay-item span {
+  color: #778594;
+  font-size: 12px;
+}
+
+.pay-columns .pay-item strong {
+  color: #172033;
+  font-size: 15px;
+  font-weight: 600;
+  text-align: left;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 900px) {
+  .filters {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 600px) {
+  .filters,
+  .pay-columns {
+    grid-template-columns: 1fr;
+  }
+
+  .company-reviews {
+    flex-wrap: wrap;
+  }
+}

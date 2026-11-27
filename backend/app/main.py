@@ -106,6 +106,8 @@ def health():
 def get_companies(
     state: str | None = None,
     search: str | None = None,
+    fleet_size: str | None = None,
+    reviews: str | None = None,
     limit: int = Query(default=200, ge=1, le=200),
     offset: int = Query(default=0, ge=0),
 ):
@@ -131,6 +133,21 @@ def get_companies(
         """)
         params["search"] = f"%{search.strip()}%"
 
+
+    if fleet_size == "6-10":
+        conditions.append("COALESCE(truck_count, power_units, 0) BETWEEN 6 AND 10")
+    elif fleet_size == "11-50":
+        conditions.append("COALESCE(truck_count, power_units, 0) BETWEEN 11 AND 50")
+    elif fleet_size == "51-200":
+        conditions.append("COALESCE(truck_count, power_units, 0) BETWEEN 51 AND 200")
+    elif fleet_size == "200+":
+        conditions.append("COALESCE(truck_count, power_units, 0) >= 201")
+
+    if reviews == "WITH":
+        conditions.append("EXISTS (SELECT 1 FROM reviews r WHERE r.company_id = companies.id)")
+    elif reviews == "WITHOUT":
+        conditions.append("NOT EXISTS (SELECT 1 FROM reviews r WHERE r.company_id = companies.id)")
+
     query = f"""
         SELECT
             id,
@@ -148,8 +165,18 @@ def get_companies(
             classdef,
             carship,
             data_source,
-            fmcsa_imported_at
+            fmcsa_imported_at,
+            COALESCE(review_stats.review_count, 0) AS review_count,
+            review_stats.average_rating
         FROM companies
+        LEFT JOIN (
+            SELECT
+                company_id,
+                COUNT(*) AS review_count,
+                ROUND(AVG(rating)::numeric, 1) AS average_rating
+            FROM reviews
+            GROUP BY company_id
+        ) AS review_stats ON review_stats.company_id = companies.id
         WHERE {" AND ".join(conditions)}
         ORDER BY name, id
         LIMIT :limit OFFSET :offset
@@ -170,6 +197,8 @@ def get_companies(
 def get_companies_count(
     state: str | None = None,
     search: str | None = None,
+    fleet_size: str | None = None,
+    reviews: str | None = None,
 ):
     conditions = [PUBLIC_COMPANY_FILTER]
     params = {}
@@ -189,6 +218,21 @@ def get_companies_count(
             )
         """)
         params["search"] = f"%{search.strip()}%"
+
+
+    if fleet_size == "6-10":
+        conditions.append("COALESCE(truck_count, power_units, 0) BETWEEN 6 AND 10")
+    elif fleet_size == "11-50":
+        conditions.append("COALESCE(truck_count, power_units, 0) BETWEEN 11 AND 50")
+    elif fleet_size == "51-200":
+        conditions.append("COALESCE(truck_count, power_units, 0) BETWEEN 51 AND 200")
+    elif fleet_size == "200+":
+        conditions.append("COALESCE(truck_count, power_units, 0) >= 201")
+
+    if reviews == "WITH":
+        conditions.append("EXISTS (SELECT 1 FROM reviews r WHERE r.company_id = companies.id)")
+    elif reviews == "WITHOUT":
+        conditions.append("NOT EXISTS (SELECT 1 FROM reviews r WHERE r.company_id = companies.id)")
 
     query = f"""
         SELECT COUNT(*)
@@ -245,3 +289,7 @@ app.include_router(news_router)
 
 from app.leads import router as leads_router
 app.include_router(leads_router)
+
+
+from app.road import router as road_router
+app.include_router(road_router)

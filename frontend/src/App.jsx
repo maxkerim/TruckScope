@@ -27,7 +27,7 @@ const states = [
 const translations = {
   EN: {
     companies: 'Companies',
-    shops: 'Truck Shops',
+    shops: 'ON THE ROAD',
     news: 'News',
     eyebrow: 'TRUCKING INFORMATION PLATFORM',
     heading: 'Find the right trucking company.',
@@ -36,6 +36,21 @@ const translations = {
     directoryDescription: 'Find and explore trucking companies in the USA.',
     directory: 'Trucking companies',
     payTitle: 'Average Trucking Company Pay',
+    companyDriver: 'Водитель компании',
+    ownerOperator: 'Владелец-оператор',
+    or: 'ИЛИ',
+    signOnBonus: 'Бонус за трудоустройство',
+    typicalDeductions: 'Типичные удержания',
+    companyDriver: 'Conductor de empresa',
+    ownerOperator: 'Propietario-operador',
+    or: 'O',
+    signOnBonus: 'Bono de contratación',
+    typicalDeductions: 'Deducciones habituales',
+    companyDriver: 'Company Driver',
+    ownerOperator: 'Owner-Operator',
+    or: 'OR',
+    signOnBonus: 'Sign-on bonus',
+    typicalDeductions: 'Typical deductions',
     companyDriver: 'Company Driver',
     ownerOperator: 'Owner Operator',
     bonus: 'New Driver Sign-On Bonus',
@@ -51,6 +66,13 @@ const translations = {
     search: 'Search company or city...',
     all: 'All states',
     trucks: 'Trucks',
+    fleetSizeLabel: 'Fleet size',
+    allFleetSizes: 'All fleet sizes',
+    reviewsLabel: 'Driver reviews',
+    withReviews: 'With reviews',
+    withoutReviews: 'Without reviews',
+    allReviews: 'All reviews',
+    noReviews: 'No reviews',
     authority: 'FMCSA authority',
     insurance: 'Insurance',
     database: 'DATABASE',
@@ -69,7 +91,7 @@ const translations = {
 
   ES: {
     companies: 'Empresas',
-    shops: 'Talleres',
+    shops: 'ON THE ROAD',
     news: 'Noticias',
     eyebrow: 'PLATAFORMA DE INFORMACIÓN DE TRANSPORTE',
     heading: 'Encuentra la empresa de transporte adecuada.',
@@ -93,6 +115,13 @@ const translations = {
     search: 'Buscar empresa o ciudad...',
     all: 'Todos los estados',
     trucks: 'Camiones',
+    fleetSizeLabel: 'Tamaño de flota',
+    allFleetSizes: 'Todos los tamaños',
+    reviewsLabel: 'Opiniones de conductores',
+    withReviews: 'Con opiniones',
+    withoutReviews: 'Sin opiniones',
+    allReviews: 'Todas las opiniones',
+    noReviews: 'Sin opiniones todavía',
     authority: 'Autoridad FMCSA',
     insurance: 'Seguro',
     database: 'BASE DE DATOS',
@@ -111,7 +140,7 @@ const translations = {
 
   RU: {
     companies: 'Компании',
-    shops: 'Трак-шопы',
+    shops: 'ON THE ROAD',
     news: 'Новости',
     eyebrow: 'ИНФОРМАЦИОННАЯ ПЛАТФОРМА О ТРАКИНГЕ',
     heading: 'Найдите подходящую траковую компанию.',
@@ -135,6 +164,13 @@ const translations = {
     search: 'Поиск компании или города...',
     all: 'Все штаты',
     trucks: 'Траки',
+    fleetSizeLabel: 'Размер автопарка',
+    allFleetSizes: 'Любой размер',
+    reviewsLabel: 'Отзывы водителей',
+    withReviews: 'С отзывами',
+    withoutReviews: 'Без отзывов',
+    allReviews: 'Все отзывы',
+    noReviews: 'Пока нет отзывов',
     authority: 'Статус FMCSA',
     insurance: 'Страховка',
     database: 'БАЗА ДАННЫХ',
@@ -167,6 +203,8 @@ function App() {
   const [companies, setCompanies] = useState([])
   const [search, setSearch] = useState('')
   const [selectedState, setSelectedState] = useState('ALL')
+  const [fleetSize, setFleetSize] = useState('')
+  const [reviewFilter, setReviewFilter] = useState('')
   const [totalCompanies, setTotalCompanies] = useState(0)
   const [page, setPage] = useState(1)
   const pageSize = 200
@@ -184,6 +222,8 @@ function App() {
     const filters = {
       state: selectedState === 'ALL' ? '' : selectedState,
       search,
+      fleetSize,
+      reviews: reviewFilter,
     }
 
     Promise.all([
@@ -211,7 +251,7 @@ function App() {
     return () => {
       cancelled = true
     }
-  }, [search, selectedState, page])
+  }, [search, selectedState, fleetSize, reviewFilter, page])
 
   const totalPages = Math.ceil(totalCompanies / pageSize)
   const firstCompany = totalCompanies === 0 ? 0 : (page - 1) * pageSize + 1
@@ -314,25 +354,35 @@ function App() {
             <section className="pay-summary">
   <h3>{t.payTitle}</h3>
 
-  <div className="pay-group">
-    <h4>Company Driver</h4>
-    <div className="pay-grid">
-      <div className="pay-item">
-        <strong>$0.65–$0.75 (Team $1) / per mile</strong>
-        <strong>OR 30–33% of gross (Team 35–38%)</strong>
+  <div className="pay-columns">
+    <div className="pay-group">
+      <h4>{t.companyDriver}</h4>
+      <div className="pay-grid">
+        <div className="pay-item">
+          <strong>$0.65–$0.75/mile (team $1)</strong>
+        </div>
+        <div className="pay-item">
+          <strong>{t.or} 30%–33% (team 38%)</strong>
+        </div>
+        <div className="pay-item">
+          <strong>{t.signOnBonus}: $700–$1,000</strong>
+        </div>
       </div>
     </div>
-  </div>
 
-  <div className="pay-group owner-operator-group">
-    <h4>Owner Operator — Commission &amp; Deductions</h4>
-    <div className="pay-grid">
-      <div className="pay-item"><span>Company commission</span><strong>10%</strong></div>
-      <div className="pay-item"><span>{t.cargo}</span><strong>$50 / day</strong></div>
-      <div className="pay-item"><span>{t.physical}</span><strong>$90–$100 / week</strong></div>
-      <div className="pay-item"><span>{t.ifta}</span><strong>$40</strong></div>
-      <div className="pay-item"><span>{t.eld}</span><strong>$40</strong></div>
-      <div className="pay-item"><span>{t.bonus}</span><strong>$700–$1,000</strong><small>{t.depending}</small></div>
+    <div className="pay-group">
+      <h4>{t.ownerOperator}</h4>
+      <div className="pay-grid">
+        <div className="pay-item">
+          <strong>10% of gross</strong>
+        </div>
+        <div className="pay-item">
+          <strong>Typical deductions: $500–$650/week (IFTA, insurance)</strong>
+        </div>
+        <div className="pay-item">
+          <strong>Dry van / reefer rental: $150–$250/week</strong>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -363,6 +413,34 @@ function App() {
                     {name}
                   </option>
                 ))}
+              </select>
+
+              <select
+                value={fleetSize}
+                aria-label={t.fleetSizeLabel}
+                onChange={e => {
+                  setFleetSize(e.target.value)
+                  setPage(1)
+                }}
+              >
+                <option value="">{t.allFleetSizes}</option>
+                <option value="6-10">6–10</option>
+                <option value="11-50">11–50</option>
+                <option value="51-200">51–200</option>
+                <option value="200+">200+</option>
+              </select>
+
+              <select
+                value={reviewFilter}
+                aria-label={t.reviewsLabel}
+                onChange={e => {
+                  setReviewFilter(e.target.value)
+                  setPage(1)
+                }}
+              >
+                <option value="">{t.allReviews}</option>
+                <option value="WITH">{t.withReviews}</option>
+                <option value="WITHOUT">{t.withoutReviews}</option>
               </select>
             </div>
 
@@ -449,6 +527,31 @@ function App() {
                         {company.city || '—'}, {company.state || '—'}
                       </strong>
                     </div>
+                  </div>
+
+                  <div className="company-reviews">
+                    {Number(company.review_count) > 0 &&
+                    company.average_rating !== null &&
+                    company.average_rating !== undefined ? (
+                      <>
+                        <div className="review-stars" aria-label="Company rating">
+                          {[1, 2, 3, 4, 5].map(star => (
+                            <span
+                              key={star}
+                              className={`star ${Number(company.average_rating) >= star ? 'filled' : ''}`}
+                            >
+                              ★
+                            </span>
+                          ))}
+                        </div>
+                        <strong>{Number(company.average_rating).toFixed(1)} / 5</strong>
+                        <span className="review-count">
+                          ({company.review_count})
+                        </span>
+                      </>
+                    ) : (
+                      <span className="no-rating">{t.noReviews}</span>
+                    )}
                   </div>
 
                   <div className="company-bottom">

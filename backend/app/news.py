@@ -26,30 +26,37 @@ CATEGORY_TERMS = {
     "drivers": [
         "driver", "owner-operator", "owner operator", "truckers", "cdl",
         "driver shortage", "parking", "life on the road", "driver pay",
+        "truck driver", "driver training",
     ],
     "regulations": [
         "fmcsa", "regulation", "regulatory", "rule", "compliance",
         "dot", "hours of service", "hos", "eld mandate", "inspection",
-        "congress", "lawmakers", "epa",
+        "congress", "lawmakers", "epa", "transportation department",
     ],
     "safety": [
         "crash", "accident", "collision", "fatal", "safety", "recall",
-        "braking", "inspection", "road closure", "weather",
+        "braking", "road closure", "rollover", "事故",
     ],
     "freight": [
         "freight", "truckload", "spot rate", "load", "broker",
         "shipping", "logistics", "capacity", "supply chain", "port",
-        "intermodal", "rate",
+        "intermodal", "rate", "freight market",
     ],
-    "technology": [
-        "technology", "software", "telematics", "electric truck",
-        "autonomous", "artificial intelligence", " ai ", "gps",
-        "fleet management", "camera", "digital",
+    "weather": [
+        "weather", "snow", "storm", "hurricane", "tornado",
+        "ice", "flood", "blizzard", "wind", "road conditions",
+        "travel advisory", "winter storm", "highway closure",
     ],
     "fuel": [
         "diesel", "fuel", "gas price", "gasoline", "highway",
         "road", "bridge", "infrastructure", "parking", "toll",
-        "weather", "snow", "storm",
+        "truck stop", "fuel prices",
+    ],
+    "technology": [
+        "technology", "software", "telematics", "electric truck",
+        "autonomous", "artificial intelligence", " ai ", "gps",
+        "fleet management", "camera", "digital", "eld",
+        "electronic logging device", "dashcam", "truck technology",
     ],
 }
 
@@ -332,10 +339,25 @@ def get_news(
         terms = CATEGORY_TERMS[category]
 
         def matches(article):
-            content = (
-                f'{article["title"]} {article["summary"]}'
-            ).lower()
-            return any(term in content for term in terms)
+            title = (article.get("title") or "").lower()
+            summary = (article.get("summary") or "").lower()
+
+            def contains_term(text, term):
+                escaped = re.escape(term.strip())
+                escaped = escaped.replace(r"\ ", r"\s+")
+                pattern = rf"(?<![a-z0-9]){escaped}(?:s|es)?(?![a-z0-9])"
+                return bool(re.search(pattern, text))
+
+            # Совпадение в заголовке — сильный сигнал релевантности.
+            if any(contains_term(title, term) for term in terms):
+                return True
+
+            # Одного случайного слова в описании недостаточно.
+            summary_matches = {
+                term for term in terms
+                if contains_term(summary, term)
+            }
+            return len(summary_matches) >= 2
 
         unique = [article for article in unique if matches(article)]
 
